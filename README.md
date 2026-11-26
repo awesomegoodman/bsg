@@ -96,3 +96,7 @@ Real Google OAuth and Sheets test results, cleanup and remaining camera limitati
 ## Vercel frontend build
 
 Select `frontend` as the project Root Directory and enable access to source files outside that directory (needed for `shared` and `config`). Use the workspace build command `npm run build`, install development dependencies for compilation, and select Node.js **24.x** in the Vercel project settings. The frontend build now compiles its shared dependency first. Set `BACKEND_URL` to the deployed API origin before building. Vercel’s Node 26 selection in the failed log does not match this repository’s supported Node 24 engine. This addresses build configuration; the previously documented Sheets write-coordination constraint still applies to a serverless backend.
+
+## Vercel backend build
+
+For the separate Express project, select `backend` as Root Directory, allow access to files outside it, include development dependencies during installation, and use `npm run build`. This command builds `shared` before compiling the backend. Set this project’s Node.js Version to **24.x** too; the Node 26 engine warnings in the supplied backend log are separate from the missing shared-build error. Configure production secrets only on the backend project. A successful build does not verify the Vercel runtime or resolve the documented cross-instance Sheets write-queue limitation.
