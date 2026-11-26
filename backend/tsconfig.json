@@ -4,7 +4,10 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "helmet": ["../node_modules/helmet/index.d.mts"]
+    }
   },
   "include": ["src", "tests"]
 }
