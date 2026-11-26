@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs';
-import { parse } from 'dotenv';
+import { parseEnv } from 'node:util';
 export const DEFAULT_BACKEND_PORT = 8080;
 export const DEFAULT_FRONTEND_PORT = 3000;
 function readEnv(path) {
   try {
-    return parse(readFileSync(new URL(path, import.meta.url)));
+    return parseEnv(readFileSync(new URL(path, import.meta.url), 'utf8'));
   } catch (error) {
     if (error.code === 'ENOENT') return {};
     throw error;

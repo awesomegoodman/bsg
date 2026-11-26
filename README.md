@@ -92,3 +92,7 @@ The fixture listens on 4001, keeps test rows in memory and simulates reception a
 The repository also accepts the existing ordered header labels `Phone`, `Purpose`, `Signed In At`, `Signed Out At`, `Sign In Method`, `Sign Out Method` and `Status`, without rewriting them.
 
 Real Google OAuth and Sheets test results, cleanup and remaining camera limitations are recorded in [the port-fix verification report](docs/port-verification.md).
+
+## Vercel frontend build
+
+Select `frontend` as the project Root Directory and enable access to source files outside that directory (needed for `shared` and `config`). Use the workspace build command `npm run build`, install development dependencies for compilation, and select Node.js **24.x** in the Vercel project settings. The frontend build now compiles its shared dependency first. Set `BACKEND_URL` to the deployed API origin before building. Vercel’s Node 26 selection in the failed log does not match this repository’s supported Node 24 engine. This addresses build configuration; the previously documented Sheets write-coordination constraint still applies to a serverless backend.
