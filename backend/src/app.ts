@@ -1,6 +1,6 @@
 import express from 'express';
 import cookieSession from 'cookie-session';
-import { helmet } from 'helmet';
+import helmet from 'helmet';
 import { rateLimit } from 'express-rate-limit';
 import type { Config } from './configs/env.js';
 import type { VisitRepository } from './repositories/visit-repository.js';
