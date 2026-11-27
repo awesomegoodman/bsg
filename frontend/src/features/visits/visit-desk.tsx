@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { PublicConfig, VisitReceipt } from '@diaspora/shared';
 import { api } from '@/lib/api';
@@ -17,6 +17,8 @@ export function VisitDesk({ mode }: { mode: 'check-in' | 'check-out' }) {
   const [notice, setNotice] = useState('');
   const [timeZone, setTimeZone] = useState('Africa/Lagos');
   const router = useRouter();
+  const arrivedViaQr = useSearchParams().get('source') === 'qr';
+  const [showQr, setShowQr] = useState(false);
   useEffect(() => {
     void api<PublicConfig>('/api/config')
       .then((config) => setTimeZone(config.timeZone))
@@ -48,7 +50,7 @@ export function VisitDesk({ mode }: { mode: 'check-in' | 'check-out' }) {
   );
   return (
     <>
-      <DeskNavigation mode={mode} />
+      <DeskNavigation mode={mode} viaQr={arrivedViaQr} />
       <div className="desk-body">
         {receipt || checkoutTime ? (
           <Receipt
@@ -71,13 +73,37 @@ export function VisitDesk({ mode }: { mode: 'check-in' | 'check-out' }) {
                 ? 'Please provide your details to register your visit.'
                 : 'Enter your confirmation reference to complete your visit.'}
             </p>
-            <QrPanel mode={mode} onScan={handleScan} />
-            <div className="manual-divider">
-              <span>
-                or enter {mode === 'check-in' ? 'details' : 'reference'}{' '}
-                manually
-              </span>
-            </div>
+            {arrivedViaQr && (
+              <div
+                role="status"
+                className="my-6 rounded-xl bg-surface p-4 text-sm"
+              >
+                <p className="font-semibold">You’ve arrived using a QR code</p>
+                <p className="mt-2">
+                  {mode === 'check-in'
+                    ? 'Enter your details below to check in. No need to scan again.'
+                    : 'Enter your confirmation reference below to check out. No need to scan again.'}
+                </p>
+                <button
+                  type="button"
+                  className="text-button mt-3"
+                  onClick={() => setShowQr((value) => !value)}
+                >
+                  {showQr ? 'Hide QR code' : 'Show QR code'}
+                </button>
+              </div>
+            )}
+            {(!arrivedViaQr || showQr) && (
+              <>
+                <QrPanel mode={mode} onScan={handleScan} />
+                <div className="manual-divider">
+                  <span>
+                    or enter {mode === 'check-in' ? 'details' : 'reference'}{' '}
+                    manually
+                  </span>
+                </div>
+              </>
+            )}
             {notice && (
               <p
                 role="status"

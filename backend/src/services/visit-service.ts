@@ -1,4 +1,4 @@
-import { randomBytes } from 'node:crypto';
+import { generateVisitReference } from './visit-reference.js';
 import type {
   CheckInData,
   Visit,
@@ -13,6 +13,7 @@ export class VisitService {
   constructor(
     private repository: VisitRepository,
     private now: () => Date = () => new Date(),
+    private referenceGenerator: () => string = generateVisitReference,
   ) {}
   async checkIn(data: CheckInData, method: VisitMethod): Promise<VisitReceipt> {
     return this.repository.exclusive(async () => {
@@ -29,9 +30,19 @@ export class VisitService {
           'ACTIVE_VISIT',
           'This phone number already has an active visit. Please check out first or ask reception for help.',
         );
+      const references = new Set(existing.map((visit) => visit.id));
+      let id = this.referenceGenerator();
+      for (let attempt = 1; references.has(id) && attempt < 5; attempt++)
+        id = this.referenceGenerator();
+      if (references.has(id))
+        throw new AppError(
+          503,
+          'REFERENCE_UNAVAILABLE',
+          'Could not allocate a visit reference. Please try again.',
+        );
       const visit: Visit = {
         ...data,
-        id: `DI-${randomBytes(18).toString('hex').toUpperCase()}`,
+        id,
         purpose: '',
         signedInAt: this.now().toISOString(),
         signedOutAt: '',

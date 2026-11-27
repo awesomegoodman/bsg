@@ -31,7 +31,7 @@ describe('visitor API through the real Sheets repository', () => {
       .post('/api/visits/check-in')
       .send(visitor)
       .expect(201);
-    expect(result.body.visitId).toMatch(/^DI-[A-F0-9]{36}$/);
+    expect(result.body.visitId).toMatch(/^DI-[2-9A-HJ-NP-Z]{12}$/);
     expect(result.body).not.toHaveProperty('phone');
     expect(sheets.rows[0]).toEqual(HEADERS);
     expect(sheets.rows[1]?.[5]).toBe('');

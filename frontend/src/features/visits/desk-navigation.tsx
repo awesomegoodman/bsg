@@ -4,21 +4,23 @@ import { UserRound } from 'lucide-react';
 export function DeskNavigation({
   mode,
   staff = false,
+  viaQr = false,
 }: {
   mode: 'check-in' | 'check-out';
   staff?: boolean;
+  viaQr?: boolean;
 }) {
   return (
     <nav className="desk-navigation" aria-label="Visitor navigation">
       <div className="segmented">
         <Link
-          href="/check-in"
+          href={viaQr ? '/check-in?source=qr' : '/check-in'}
           aria-current={mode === 'check-in' && !staff ? 'page' : undefined}
         >
           Check In
         </Link>
         <Link
-          href="/check-out"
+          href={viaQr ? '/check-out?source=qr' : '/check-out'}
           aria-current={mode === 'check-out' ? 'page' : undefined}
         >
           Check Out
@@ -31,7 +33,10 @@ export function DeskNavigation({
         </Link>
       )}
       {staff && (
-        <Link href="/check-in" className="staff-link">
+        <Link
+          href={viaQr ? '/check-in?source=qr' : '/check-in'}
+          className="staff-link"
+        >
           Visitor check-in
         </Link>
       )}

@@ -25,7 +25,7 @@ export function apiRoutes(
     const mode = req.query.mode ?? 'check-in';
     if (mode !== 'check-in' && mode !== 'check-out')
       throw new AppError(400, 'INVALID_MODE', 'Choose check-in or check-out.');
-    const svg = await QRCode.toString(`${config.origin}/${mode}`, {
+    const svg = await QRCode.toString(`${config.origin}/${mode}?source=qr`, {
       type: 'svg',
       width: 300,
       margin: 1,
